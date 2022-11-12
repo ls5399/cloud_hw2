@@ -14,6 +14,7 @@ from opensearchpy import OpenSearch, RequestsHttpConnection
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
+
 headers = { "Content-Type": "application/json" }
 region = 'us-east-1'
 b2_bucket_name = "f2022-assignment2-b2"
