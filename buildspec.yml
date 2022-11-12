@@ -1,0 +1,9 @@
+version: 0.1
+phases:
+  install:
+    commands:
+      - aws cloudformation package --template-file search-photos.yaml --s3-bucket smart-photo-album-code-pipeline --output-template-file output-search-photos.yml
+artifacts:
+  files:
+    - search-photos.yaml
+    - output-search-photos.yml
