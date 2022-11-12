@@ -1,9 +1,20 @@
-version: 0.1
+version: 0.2  
 phases:
   install:
     commands:
-      - aws cloudformation package --template-file search-photos.yaml --s3-bucket smart-photo-album-code-pipeline --output-template-file output-search-photos.yml
+      - echo "Entering install..."
+  build:
+    commands:
+      - echo "Zipping lambda functions..."
+      - cd Lambda
+      - zip -r cfn_lambda.zip index-photos.py
+      - cd ..
+  post_build:
+    commands:
+      - echo "Updating lambda function..."
+      - aws lambda update-function-code --function-name cfn_lambda --zip-file fileb://Lambda/cfn_lambda.zip
+      - echo "Updating done!"
 artifacts:
+  type: zip
   files:
-    - search-photos.yaml
-    - output-search-photos.yml
+    - lf_cf.yaml
