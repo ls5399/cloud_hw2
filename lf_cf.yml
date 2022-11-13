@@ -1,0 +1,51 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: CloudFormation for lambda function and s3 bucket
+Resources:
+  CFNLambda:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      FunctionName: cfn_lambda
+      Handler: lambda/cfn_lambda.lambda_handler
+      Role:
+        'Fn::GetAtt':
+          - CFNLambdaRole
+          - Arn
+      Code:
+        S3Bucket: cchw2-frontend-cf
+        S3Key: cfn_lambda.zip
+      Runtime: python3.7
+      Timeout: 300
+  CFNLambdaRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: cfn_lambdaRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      Policies:
+        - PolicyName: AWSLambdaBasicExecutionRole
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: '*'
+        - PolicyName: AmazonS3FullAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: 's3:*'
+                Resource:
+                  - 'arn:aws:s3:::exchange-data-raw'
+                  - 'arn:aws:s3:::exchange-data-raw/*'
